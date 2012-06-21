@@ -1,0 +1,11 @@
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Release\emiNfe.exe.config
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Release\emiNfe.exe
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Release\emiNfe.XmlSerializers.dll
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Release\emiNfe.pdb
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\criarNfeXML.form_pai.resources
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\emiNfe.Properties.Resources.resources
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\emiNfe.csproj.GenerateResource.Cache
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\emiNfe.exe
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\emiNfe.pdb
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Release\emiNfe.XmlSerializers.dll
