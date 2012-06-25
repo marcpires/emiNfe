@@ -71,7 +71,11 @@ namespace criarNfeXML
                                 {
                                     cStat = resposta["protNFe"]["infProt"]["cStat"].InnerText;
                                     xMotivo = resposta["protNFe"]["infProt"]["xMotivo"].InnerText;
-                                    nProt = resposta["protNFe"]["infProt"]["nProt"].InnerText;
+                                    if (cStat != "204")
+                                    {
+                                        nProt = resposta["protNFe"]["infProt"]["nProt"].InnerText;
+                                    }
+                                    
                                     proc_Nfe.proc_Nfe(documento,resposta);
                                 } break;
                             default:

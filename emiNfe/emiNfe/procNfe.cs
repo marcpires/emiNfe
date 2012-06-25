@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.IO;
+using System.Reflection;
 
 namespace criarNfeXML
 {
@@ -11,7 +13,9 @@ namespace criarNfeXML
         public void proc_Nfe(string venda,XmlNode node)
         {
             //XmlTextWriter wr = new XmlTextWriter("C:\\inetpub\\wwwroot\\procNfe\\" + venda + ".xml", Encoding.UTF8);
-            XmlTextWriter wr = new XmlTextWriter("C:\\Nfe\\procNfe\\" + venda + ".xml", Encoding.UTF8);
+            string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            caminho = caminho + "\\Nfe\\procNfe\\" + venda + ".xml";
+            XmlTextWriter wr = new XmlTextWriter(caminho, Encoding.UTF8);
             XmlNode no = null;
             XmlNode no_ = null;
             XmlDocument xml = new XmlDocument();
@@ -20,7 +24,10 @@ namespace criarNfeXML
             xml_.PreserveWhitespace = true;
             xml_.LoadXml(node.OuterXml.ToString());
             //xml.Load("C:\\inetpub\\wwwroot\\nota_xml_assinado\\" + venda + ".xml");
-            xml.Load("C:\\Nfe\\nota_xml_assinado\\" + venda + ".xml");
+            string caminho_ass = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            caminho_ass = caminho_ass + "\\Nfe\\nota_xml_assinado\\" + venda + ".xml";
+            //xml.Load("C:\\Nfe\\nota_xml_assinado\\" + venda + ".xml");
+            xml.Load(caminho_ass);
             XmlNodeList lista = xml.GetElementsByTagName("NFe");
             XmlNodeList lista2 = xml_.GetElementsByTagName("protNFe");
             foreach (XmlNode x in lista)

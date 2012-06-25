@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Data.SqlClient;
+using System.IO;
+using System.Reflection;
 
 namespace criarNfeXML
 {
@@ -285,7 +287,9 @@ namespace criarNfeXML
 
                 // criação do xml
                 //string caminho = "C:\\inetpub\\wwwroot\\nota_xml\\" + venda + ".xml";
-                string caminho = "C:\\Nfe\\nota_xml\\" + venda + ".xml";
+                //string caminho = "C:\\Nfe\\nota_xml\\" + venda + ".xml";
+                string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                caminho = caminho + "\\Nfe\\nota_xml\\"+venda+".xml";
                 XmlTextWriter writer = new XmlTextWriter(caminho, Encoding.UTF8);
                 writer.WriteStartDocument(true);
                 writer.WriteStartElement("enviNFe");//tag enviNFe

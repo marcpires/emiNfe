@@ -4,6 +4,7 @@ using System.Xml;
 using System.IO;
 using System.Data.SqlClient;
 using System.Text;
+using System.Reflection;
 
 namespace criarNfeXML
 {
@@ -18,11 +19,13 @@ namespace criarNfeXML
 
             XmlDocument xml = new XmlDocument();
             //string str_xml = "C:\\Users\\Administrador\\Documents\\Visual Studio 2008\\Projects\\criarNfeXML\\criarNfeXML\\conf\\confdb.xml";
-            string str_xml = "C:\\Nfe\\conf\\confdb.xml";
-            if (File.Exists(str_xml))
+            //string str_xml = "C:\\Nfe\\conf\\confdb.xml";
+            string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            caminho = caminho + "\\Nfe\\conf\\confdb.xml";
+            if (File.Exists(caminho))
             {
 
-                xml.Load(str_xml);
+                xml.Load(caminho);
                 user = xml["ConfDB"]["user"].InnerText;
                 senha = xml["ConfDB"]["senha"].InnerText;
                 server = xml["ConfDB"]["server"].InnerText;
@@ -46,11 +49,13 @@ namespace criarNfeXML
 
             XmlDocument xml = new XmlDocument();
 //            string str_xml = "C:\\Users\\Administrador\\Documents\\Visual Studio 2008\\Projects\\criarNfeXML\\criarNfeXML\\conf\\confdb.xml";
-            string str_xml = "C:\\Nfe\\conf\\confdb.xml";
-            if (File.Exists(str_xml))
+            //string str_xml = "C:\\Nfe\\conf\\confdb.xml";
+            string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            caminho = caminho + "\\Nfe\\conf\\confdb.xml";
+            if (File.Exists(caminho))
             {
 
-                xml.Load(str_xml);
+                xml.Load(caminho);
                 user = xml["ConfDB"]["user"].InnerText;
                 senha = xml["ConfDB"]["senha"].InnerText;
                 server = xml["ConfDB"]["server"].InnerText;

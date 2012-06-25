@@ -7,12 +7,15 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.IO;
+using System.Reflection;
 
 namespace criarNfeXML
 {
     public partial class confCert : Form
     {
-        string caminho = "C:\\Nfe\\conf\\confcert.xml";
+        //string caminho = "C:\\Nfe\\conf\\confcert.xml";
+        string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
         public confCert()
         {
             InitializeComponent();
@@ -21,8 +24,9 @@ namespace criarNfeXML
             
             
             XmlDocument xml = new XmlDocument();
+            caminho = caminho + "\\Nfe\\conf\\confcert.xml";
             //if (File.Exists("C:\\Users\\Administrador\\Documents\\Visual Studio 2008\\Projects\\criarNfeXML\\criarNfeXML\\conf\\confdb.xml"))
-            if (File.Exists("C:\\Nfe\\conf\\confcert.xml"))
+            if (File.Exists(caminho))
             {
                 
                 xml.Load(caminho);                

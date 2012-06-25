@@ -9,6 +9,8 @@ using System.Xml;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
+using System.IO;
+using System.Reflection;
 
 
 namespace criarNfeXML
@@ -61,7 +63,10 @@ namespace criarNfeXML
             selChave chave = new selChave();
             X509Certificate2 key = chave.selecionaChave();
             XmlDocument doc = new XmlDocument();
-            doc.Load("C:\\Nfe\\conf\\confcert.xml");
+            //doc.Load("C:\\Nfe\\conf\\confcert.xml");
+            string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            caminho = caminho + "\\Nfe\\conf\\confcert.xml";
+            doc.Load(caminho);
             SignedXml xml = new SignedXml(doc);
             xml.SigningKey = key.PrivateKey;
             try

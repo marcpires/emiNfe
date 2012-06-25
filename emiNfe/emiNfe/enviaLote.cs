@@ -6,6 +6,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Data.SqlClient;
+using System.Reflection;
+using System.IO;
 
 namespace criarNfeXML
 {
@@ -42,9 +44,11 @@ namespace criarNfeXML
 
                         XmlDocument myXMLDoc1 = new XmlDocument();
                         myXMLDoc1.PreserveWhitespace = true;
+                        string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        caminho = caminho + "\\Nfe\\nota_xml_assinado\\" + venda.Trim() + ".xml";
                         //myXMLDoc1.Load("C:\\inetpub\\wwwroot\\nota_xml_assinado\\" + venda.Trim() + ".xml");
-                        myXMLDoc1.Load("C:\\Nfe\\nota_xml_assinado\\" + venda.Trim() + ".xml");
-
+//                        myXMLDoc1.Load("C:\\Nfe\\nota_xml_assinado\\" + venda.Trim() + ".xml");
+                        myXMLDoc1.Load(caminho);
                         v_XMLConteudo = myXMLDoc1.OuterXml;
 
                         //Response.Write(v_XMLConteudo);

@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.IO;
+using System.Reflection;
 
 namespace criarNfeXML
 {
@@ -17,7 +18,9 @@ namespace criarNfeXML
             X509Store store = new X509Store("MY", StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
             X509Certificate2Collection collection = (X509Certificate2Collection)store.Certificates;
-            string caminho = "C:\\Nfe\\conf\\confcert.xml";
+            //string caminho = "C:\\Nfe\\conf\\confcert.xml";
+            string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            caminho = caminho + "\\Nfe\\conf\\confcert.xml";
             if (File.Exists(caminho))
             {
                 XmlDocument xml = new XmlDocument();

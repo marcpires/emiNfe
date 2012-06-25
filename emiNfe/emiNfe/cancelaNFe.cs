@@ -10,6 +10,8 @@ using System.Security.Cryptography.Xml;
 using System.Windows.Forms;
 using System.Xml;
 using System.Data.SqlClient;
+using System.Reflection;
+using System.IO;
 
 namespace criarNfeXML
 {
@@ -50,7 +52,10 @@ namespace criarNfeXML
 
                         reader_nf.Close();
 
-                        string caminho = "C:\\" + venda + ".xml";
+                        //string caminho = "C:\\" + venda + ".xml";
+                        string caminho = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        caminho = caminho + "\\Nfe\\cancNfe\\" + venda + ".xml";
+
                         XmlTextWriter writer = new XmlTextWriter(caminho, Encoding.UTF8);
                         writer.WriteStartDocument(true);
                         writer.WriteStartElement("cancNFe");
@@ -76,7 +81,9 @@ namespace criarNfeXML
                         myXMLDoc1.PreserveWhitespace = false;
 
                         //myXMLDoc1.Load("C:\\inetpub\\wwwroot\\nota_xml\\" + venda + ".xml");
-                        myXMLDoc1.Load("C:\\" + venda + ".xml");
+                        //myXMLDoc1.Load("C:\\" + venda + ".xml");
+                        
+                        myXMLDoc1.Load(caminho);
 
                         //tentando assinar somente o xml da nota
                         SignedXml sign = new SignedXml(myXMLDoc1);
@@ -107,7 +114,7 @@ namespace criarNfeXML
                         // Save the signed XML document to a file specified
                         // using the passed string.
                         //using (XmlTextWriter xmltw = new XmlTextWriter("C:\\inetpub\\wwwroot\\nota_xml_assinado\\" + venda + ".xml", new UTF8Encoding(false)))
-                        using (XmlTextWriter xmltw = new XmlTextWriter("C:\\" + venda + ".xml", new UTF8Encoding(false)))
+                        using (XmlTextWriter xmltw = new XmlTextWriter(caminho, new UTF8Encoding(false)))
                         {
                             myXMLDoc1.WriteTo(xmltw);
                             xmltw.Close();
