@@ -1,0 +1,9 @@
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Debug\emiNfe.Properties.Resources.resources
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Debug\emiNfe.csproj.GenerateResource.Cache
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Debug\criarNfeXML.form_pai.resources
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Debug\emiNfe.exe.config
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Debug\emiNfe.exe
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\bin\Debug\emiNfe.pdb
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Debug\emiNfe.exe
+C:\Users\Administrador\Documents\Visual Studio 2008\Projects\emiNfe\emiNfe\obj\Debug\emiNfe.pdb
