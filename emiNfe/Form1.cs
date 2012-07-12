@@ -137,7 +137,65 @@ namespace criarNfeXML
             }
         }
 
+        public void falha(string documento, SqlConnection con, string tipo, string operacao)
+        {
+            SqlCommand up = null;
+            SqlDataReader reader = null;
+            conexao conec = new conexao();
+            string conn = conec.conex();
+            if (conn == "1")
+            {
+                string conexao = conec.conn2();
+                SqlConnection connection = new SqlConnection(conexao);
+                connection.Open();
+                using (connection)
+                {
+                    if (tipo == "saida")
+                    {
+                        if (operacao == "xml")
+                        {
+                            up = new SqlCommand("update nfe_saida set cStat='0',xMotivo='FALHA XML',xml='0' where documento='" + documento + "'", connection);
+                            reader = up.ExecuteReader();
 
+                        }
+                        if (operacao == "assinatura")
+                        {
+                            up = new SqlCommand("update nfe_saida set cStat='0',xMotivo='FALHA ASSINATURA',assinado='0' where documento='" + documento + "'", connection);
+                            reader = up.ExecuteReader();
+                            //reader.Close();
+                        }
+                        if (operacao == "envio")
+                        {
+                            up = new SqlCommand("update nfe_saida set cStat='0',xMotivo='FALHA ENVIO',enviado='0' where documento='" + documento + "'", connection);
+                            reader = up.ExecuteReader();
+                            //reader.Close();
+                        }
+                    }
+                    else if (tipo == "entrada")
+                    {
+                        if (operacao == "xml")
+                        {
+                            up = new SqlCommand("update nfe_entrada set cStat='0',xMotivo='FALHA XML',xml='0' where documento='" + documento + "'", connection);
+                            reader = up.ExecuteReader();
+                            //reader.Close();
+                        }
+                        if (operacao == "assinatura")
+                        {
+                            up = new SqlCommand("update nfe_entrada set cStat='0',xMotivo='FALHA ASSINATURA',assinado='0' where documento='" + documento + "'", connection);
+                            reader = up.ExecuteReader();
+                            //reader.Close();
+                        }
+                        if (operacao == "envio")
+                        {
+                            up = new SqlCommand("update nfe_entrada set cStat='0',xMotivo='FALHA ENVIO',enviado='0' where documento='" + documento + "'", connection);
+                            reader = up.ExecuteReader();
+                            //reader.Close();
+                        }
+                    }
+                    reader.Close();
+                }
+            }
+        }
         public void alerta(object sender, EventArgs e)
         {
             conexao cs = new conexao();
@@ -175,7 +233,7 @@ namespace criarNfeXML
 
         public void consVenda(object sender, EventArgs e)
         {
-
+            string doc = null;
             string tipo = "saida";
             geraLog log = new geraLog();
             testa_conexao = cs.conex();
@@ -193,8 +251,13 @@ namespace criarNfeXML
 
                         string resposta = nova.criaNF(reader_venda["documento"].ToString(), tipo);
                         txt.Text = txt.Text + DateTime.Now + " - XML - " + reader_venda["documento"].ToString() + " - " + resp(resposta) + "\r\n";
-                        print = DateTime.Now + " - XML - " + reader_venda["documento"].ToString() + " - " + resp(resposta) + "\r\n";
+                        print = DateTime.Now + " - XML - " + reader_venda["documento"].ToString() + " - " + resposta + "\r\n";
                         log.gera_Log(diamesano, print);
+                        if (resp(resposta) == "FALHA") {
+                            doc = reader_venda["documento"].ToString();
+                            falha(doc, nova_con, "saida", "xml");
+                            doc = null;
+                        }
                         print = null;
                     }
                     reader_venda.Close();
@@ -203,13 +266,16 @@ namespace criarNfeXML
                     while (reader_assina.Read())
                     {
                         string resposta_assina = lote.gera_Lote(reader_assina["documento"].ToString(), reader_assina["chave"].ToString(), tipo);
-                        print = DateTime.Now + " - ASSINA - " + reader_assina["documento"].ToString() + " - " + resp(resposta_assina) + "\r\n";
+                        print = DateTime.Now + " - ASSINA - " + reader_assina["documento"].ToString() + " - " + resposta_assina + "\r\n";
                         txt.Text = txt.Text + DateTime.Now + " - ASSINA - " + reader_assina["documento"].ToString() + " - " + resp(resposta_assina) + "\r\n";
                         log.gera_Log(diamesano, print);
                         print = null;
-                        /*if (resp(resposta_assina) == "FALHA") {
-                            this.Close();
-                        }*/
+                        if (resp(resposta_assina) == "FALHA")
+                        {
+                            doc = reader_assina["documento"].ToString();
+                            falha(doc, nova_con, "saida", "assinatura");
+                            doc = null;
+                        }
                     }
                     reader_assina.Close();
 
@@ -219,9 +285,15 @@ namespace criarNfeXML
                     {
                         string resposta_envia = env.envia_Lote(reader_envia["documento"].ToString().Trim(), tipo);
                         txt.Text = txt.Text + DateTime.Now + " - ENVIA - " + reader_envia["documento"].ToString().Trim() + " - " + resp(resposta_envia) + "\r\n";
-                        print = DateTime.Now + " - ENVIA - " + reader_envia["documento"].ToString().Trim() + " - " + resp(resposta_envia) + "\r\n";
+                        print = DateTime.Now + " - ENVIA - " + reader_envia["documento"].ToString().Trim() + " - " + resposta_envia + "\r\n";
                         log.gera_Log(diamesano, print);
                         print = null;
+                        if (resp(resposta_envia) == "FALHA")
+                        {
+                            doc = reader_envia["documento"].ToString();
+                            falha(doc, nova_con, "saida", "envio");
+                            doc = null;
+                        }
 
                     }
                     reader_envia.Close();
@@ -300,6 +372,7 @@ namespace criarNfeXML
         //entrada
         public void consEntrada(object sender, EventArgs e)
         {
+            string doc = null;
             string tipo = "entrada";
             geraLog log = new geraLog();
             testa_conexao = cs.conex();
@@ -317,9 +390,15 @@ namespace criarNfeXML
 
                         string resposta = nova.criaNF(reader_venda["documento"].ToString(), tipo);
                         txt.Text = txt.Text + DateTime.Now + " - XML - " + reader_venda["documento"].ToString() + " - " + resp(resposta) + "\r\n";
-                        print = DateTime.Now + " - XML - " + reader_venda["documento"].ToString() + " - " + resp(resposta) + "\r\n";
+                        print = DateTime.Now + " - XML - " + reader_venda["documento"].ToString() + " - " + resposta + "\r\n";
                         log.gera_Log(diamesano, print);
                         print = null;
+                        if (resp(resposta) == "FALHA")
+                        {
+                            doc = reader_venda["documento"].ToString();
+                            falha(doc, nova_con, "entrada", "xml");
+                            doc = null;
+                        }
                     }
                     reader_venda.Close();
                     SqlCommand c_assina = new SqlCommand("select  top 1 nfe_entrada.*, nfe_itens_entrada.documento as doc_itens from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado is null or nfe_entrada.assinado = '') and (nfe_itens_entrada.documento is not null)", nova_con);
@@ -327,13 +406,16 @@ namespace criarNfeXML
                     while (reader_assina.Read())
                     {
                         string resposta_assina = lote.gera_Lote(reader_assina["documento"].ToString(), reader_assina["chave"].ToString(), tipo);
-                        print = DateTime.Now + " - ASSINA - " + reader_assina["documento"].ToString() + " - " + resp(resposta_assina) + "\r\n";
+                        print = DateTime.Now + " - ASSINA - " + reader_assina["documento"].ToString() + " - " + resposta_assina + "\r\n";
                         txt.Text = txt.Text + DateTime.Now + " - ASSINA - " + reader_assina["documento"].ToString() + " - " + resp(resposta_assina) + "\r\n";
                         log.gera_Log(diamesano, print);
                         print = null;
-                        /*if (resp(resposta_assina) == "FALHA") {
-                            this.Close();
-                        }*/
+                        if (resp(resposta_assina) == "FALHA")
+                        {
+                            doc = reader_assina["documento"].ToString();
+                            falha(doc, nova_con, "entrada", "assinatura");
+                            doc = null;
+                        }
                     }
                     reader_assina.Close();
 
@@ -343,9 +425,15 @@ namespace criarNfeXML
                     {
                         string resposta_envia = env.envia_Lote(reader_envia["documento"].ToString().Trim(), tipo);
                         txt.Text = txt.Text + DateTime.Now + " - ENVIA - " + reader_envia["documento"].ToString().Trim() + " - " + resp(resposta_envia) + "\r\n";
-                        print = DateTime.Now + " - ENVIA - " + reader_envia["documento"].ToString().Trim() + " - " + resp(resposta_envia) + "\r\n";
+                        print = DateTime.Now + " - ENVIA - " + reader_envia["documento"].ToString().Trim() + " - " + resposta_envia + "\r\n";
                         log.gera_Log(diamesano, print);
                         print = null;
+                        if (resp(resposta_envia) == "FALHA")
+                        {
+                            doc = reader_envia["documento"].ToString();
+                            falha(doc, nova_con, "entrada", "envio");
+                            doc = null;
+                        }
 
                     }
                     reader_envia.Close();

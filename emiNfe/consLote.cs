@@ -58,13 +58,13 @@ namespace criarNfeXML
                         obj.ClientCertificates.Add(chave);
                         resposta = obj.nfeRetRecepcao2(xmlDados);
 
-                        XmlDocument erro = new XmlDocument();
+                        /*XmlDocument erro = new XmlDocument();
                         erro.PreserveWhitespace = true;
                         erro.LoadXml(resposta.OuterXml.ToString());
                         using(XmlTextWriter w = new XmlTextWriter("C:\\"+recibo+".xml",new UTF8Encoding(false))){
                             erro.WriteTo(w);
                             w.Close();
-                        }
+                        }*/
                         cStat_mae = resposta["cStat"].InnerText.Trim();
 
 

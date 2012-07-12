@@ -97,7 +97,8 @@ namespace criarNfeXML
             }
             catch(Exception e) {
                 string erro = e.ToString();
-                return "0";
+                //return "0";
+                return erro;
             }
             
         
