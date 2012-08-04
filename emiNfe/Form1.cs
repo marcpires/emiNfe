@@ -50,7 +50,7 @@ namespace criarNfeXML
             txt.ScrollBars = ScrollBars.Vertical;
             txt2.ScrollBars = ScrollBars.Vertical;
             txt_alerta.ScrollBars = ScrollBars.Vertical;
-            timer_venda.Interval = 7000;
+            timer_venda.Interval = 9000;
             timer_venda.Enabled = true;
             timer_alerta.Interval = 1000;
             timer_alerta.Enabled = true;
@@ -211,7 +211,7 @@ namespace criarNfeXML
                 using (con)
                 {
 
-                    SqlCommand c_alerta = new SqlCommand("select * from nfe_saida where cStat<>'100' and cStat <> '110'", con);
+                    SqlCommand c_alerta = new SqlCommand("select * from nfe_saida with(nolock) where cStat<>'100' and cStat <> '110'", con);
                     reader_alerta = c_alerta.ExecuteReader();
                     while (reader_alerta.Read())
                     {
@@ -244,7 +244,7 @@ namespace criarNfeXML
                 nova_con.Open();
                 using (nova_con)
                 {
-                    SqlCommand c_venda = new SqlCommand("select top 1 nfe_saida.*, nfe_itens_saida.documento as doc_itens from nfe_saida left outer join nfe_itens_saida on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave = '' or nfe_saida.chave is null) and (nfe_saida.nf='' or nfe_saida.nf is null) and (nfe_saida.xml='' or nfe_saida.xml is null) and (nfe_itens_saida.documento is not null)", nova_con);
+                    SqlCommand c_venda = new SqlCommand("select top 1 nfe_saida.*, nfe_itens_saida.documento as doc_itens from nfe_saida with(nolock) left outer join nfe_itens_saida with(nolock) on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave = '' or nfe_saida.chave is null) and (nfe_saida.nf='' or nfe_saida.nf is null) and (nfe_saida.xml='' or nfe_saida.xml is null) and (nfe_itens_saida.documento is not null)", nova_con);
                     reader_venda = c_venda.ExecuteReader();
                     while (reader_venda.Read())
                     {
@@ -261,7 +261,7 @@ namespace criarNfeXML
                         print = null;
                     }
                     reader_venda.Close();
-                    SqlCommand c_assina = new SqlCommand("select  top 1 nfe_saida.*, nfe_itens_saida.documento as doc_itens from nfe_saida left outer join nfe_itens_saida on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado is null or nfe_saida.assinado = '') and (nfe_itens_saida.documento is not null)", nova_con);
+                    SqlCommand c_assina = new SqlCommand("select  top 1 nfe_saida.*, nfe_itens_saida.documento as doc_itens from nfe_saida with(nolock) left outer join nfe_itens_saida with(nolock) on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado is null or nfe_saida.assinado = '') and (nfe_itens_saida.documento is not null)", nova_con);
                     reader_assina = c_assina.ExecuteReader();
                     while (reader_assina.Read())
                     {
@@ -279,7 +279,7 @@ namespace criarNfeXML
                     }
                     reader_assina.Close();
 
-                    SqlCommand c_envia = new SqlCommand("select top 1 nfe_saida.*,nfe_itens_saida.documento as doc_itens from nfe_saida left outer join nfe_itens_saida on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado is null or nfe_saida.enviado = '') and (nfe_itens_saida.documento is not null)", nova_con);
+                    SqlCommand c_envia = new SqlCommand("select top 1 nfe_saida.*,nfe_itens_saida.documento as doc_itens from nfe_saida with(nolock) left outer join nfe_itens_saida with(nolock) on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado is null or nfe_saida.enviado = '') and (nfe_itens_saida.documento is not null)", nova_con);
                     reader_envia = c_envia.ExecuteReader();
                     while (reader_envia.Read())
                     {
@@ -297,7 +297,7 @@ namespace criarNfeXML
 
                     }
                     reader_envia.Close();
-                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_saida.*,nfe_itens_saida.documento as doc_itens from nfe_saida left outer join nfe_itens_saida on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado = 'S') and (nfe_saida.recibo is not null or nfe_saida.recibo <> '') and (nfe_saida.cStat = '' or nfe_saida.cStat is null) and (nfe_saida.xMotivo = '' or nfe_saida.xMotivo is null) and (nfe_itens_saida.documento is not null)", nova_con);
+                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_saida.*,nfe_itens_saida.documento as doc_itens from nfe_saida with(nolock) left outer join nfe_itens_saida with(nolock) on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado = 'S') and (nfe_saida.recibo is not null or nfe_saida.recibo <> '') and (nfe_saida.cStat = '' or nfe_saida.cStat is null) and (nfe_saida.xMotivo = '' or nfe_saida.xMotivo is null) and (nfe_itens_saida.documento is not null)", nova_con);
                     reader_lote = c_lote.ExecuteReader();
                     while (reader_lote.Read())
                     {
@@ -310,7 +310,7 @@ namespace criarNfeXML
                     }
                     reader_lote.Close();
 
-                    SqlCommand c_cancela = new SqlCommand("select top 1 nfe_saida.*, nfe_itens_saida.documento from nfe_saida left outer join nfe_itens_saida on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado = 'S') and (nfe_saida.recibo is not null or nfe_saida.recibo <> '') and (nfe_saida.cStat <> '' or nfe_saida.cStat is not null) and (nfe_saida.xMotivo <> '' or nfe_saida.xMotivo is not null) and (nfe_saida.cancelado = 'aguardando') and (nfe_saida.dt_cancela = '' or nfe_saida.dt_cancela is null) and (nfe_itens_saida.documento is not null)", nova_con);
+                    SqlCommand c_cancela = new SqlCommand("select top 1 nfe_saida.*, nfe_itens_saida.documento from nfe_saida with(nolock) left outer join nfe_itens_saida with(nolock) on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado = 'S') and (nfe_saida.recibo is not null or nfe_saida.recibo <> '') and (nfe_saida.cStat <> '' or nfe_saida.cStat is not null) and (nfe_saida.xMotivo <> '' or nfe_saida.xMotivo is not null) and (nfe_saida.cancelado = 'aguardando') and (nfe_saida.dt_cancela = '' or nfe_saida.dt_cancela is null) and (nfe_itens_saida.documento is not null)", nova_con);
                     reader_cancela = c_cancela.ExecuteReader();
                     while (reader_cancela.Read())
                     {
@@ -351,7 +351,7 @@ namespace criarNfeXML
                 nova_con.Open();
                 using (nova_con)
                 {
-                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_saida.*,nfe_itens_saida.documento as doc_itens from nfe_saida left outer join nfe_itens_saida on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado = 'S') and (nfe_saida.recibo is not null or nfe_saida.recibo <> '') and (nfe_saida.cStat = '105') and (nfe_itens_saida.documento is not null)", nova_con);
+                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_saida.*,nfe_itens_saida.documento as doc_itens from nfe_saida with(nolock) left outer join nfe_itens_saida with(nolock) on nfe_saida.documento = nfe_itens_saida.documento where (nfe_saida.chave <> '' and nfe_saida.chave is not null) and (nfe_saida.nf<>'') and (nfe_saida.xml='S') and (nfe_saida.assinado = 'S') and (nfe_saida.enviado = 'S') and (nfe_saida.recibo is not null or nfe_saida.recibo <> '') and (nfe_saida.cStat = '105') and (nfe_itens_saida.documento is not null)", nova_con);
                     reader_lote = c_lote.ExecuteReader();
                     while (reader_lote.Read())
                     {
@@ -383,7 +383,7 @@ namespace criarNfeXML
                 nova_con.Open();
                 using (nova_con)
                 {
-                    SqlCommand c_venda = new SqlCommand("select top 1 nfe_entrada.*, nfe_itens_entrada.documento as doc_itens from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave = '' or nfe_entrada.chave is null) and (nfe_entrada.nf='' or nfe_entrada.nf is null) and (nfe_entrada.xml='' or nfe_entrada.xml is null) and (nfe_itens_entrada.documento is not null)", nova_con);
+                    SqlCommand c_venda = new SqlCommand("select top 1 nfe_entrada.*, nfe_itens_entrada.documento as doc_itens from nfe_entrada with(nolock) left outer join nfe_itens_entrada with(nolock) on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave = '' or nfe_entrada.chave is null) and (nfe_entrada.nf='' or nfe_entrada.nf is null) and (nfe_entrada.xml='' or nfe_entrada.xml is null) and (nfe_itens_entrada.documento is not null)", nova_con);
                     reader_venda = c_venda.ExecuteReader();
                     while (reader_venda.Read())
                     {
@@ -401,7 +401,7 @@ namespace criarNfeXML
                         }
                     }
                     reader_venda.Close();
-                    SqlCommand c_assina = new SqlCommand("select  top 1 nfe_entrada.*, nfe_itens_entrada.documento as doc_itens from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado is null or nfe_entrada.assinado = '') and (nfe_itens_entrada.documento is not null)", nova_con);
+                    SqlCommand c_assina = new SqlCommand("select  top 1 nfe_entrada.*, nfe_itens_entrada.documento as doc_itens from nfe_entrada with(nolock) left outer join nfe_itens_entrada with(nolock) on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado is null or nfe_entrada.assinado = '') and (nfe_itens_entrada.documento is not null)", nova_con);
                     reader_assina = c_assina.ExecuteReader();
                     while (reader_assina.Read())
                     {
@@ -419,7 +419,7 @@ namespace criarNfeXML
                     }
                     reader_assina.Close();
 
-                    SqlCommand c_envia = new SqlCommand("select top 1 nfe_entrada.*,nfe_itens_entrada.documento as doc_itens from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado is null or nfe_entrada.enviado = '') and (nfe_itens_entrada.documento is not null)", nova_con);
+                    SqlCommand c_envia = new SqlCommand("select top 1 nfe_entrada.*,nfe_itens_entrada.documento as doc_itens from nfe_entrada with(nolock) left outer join nfe_itens_entrada with(nolock) on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado is null or nfe_entrada.enviado = '') and (nfe_itens_entrada.documento is not null)", nova_con);
                     reader_envia = c_envia.ExecuteReader();
                     while (reader_envia.Read())
                     {
@@ -437,7 +437,7 @@ namespace criarNfeXML
 
                     }
                     reader_envia.Close();
-                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_entrada.*,nfe_itens_entrada.documento as doc_itens from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado = 'S') and (nfe_entrada.recibo is not null or nfe_entrada.recibo <> '') and (nfe_entrada.cStat = '' or nfe_entrada.cStat is null) and (nfe_entrada.xMotivo = '' or nfe_entrada.xMotivo is null) and (nfe_itens_entrada.documento is not null)", nova_con);
+                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_entrada.*,nfe_itens_entrada.documento as doc_itens from nfe_entrada with(nolock) left outer join nfe_itens_entrada with(nolock) on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado = 'S') and (nfe_entrada.recibo is not null or nfe_entrada.recibo <> '') and (nfe_entrada.cStat = '' or nfe_entrada.cStat is null) and (nfe_entrada.xMotivo = '' or nfe_entrada.xMotivo is null) and (nfe_itens_entrada.documento is not null)", nova_con);
                     reader_lote = c_lote.ExecuteReader();
                     while (reader_lote.Read())
                     {
@@ -450,7 +450,7 @@ namespace criarNfeXML
                     }
                     reader_lote.Close();
 
-                    SqlCommand c_cancela = new SqlCommand("select top 1 nfe_entrada.*, nfe_itens_entrada.documento from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado = 'S') and (nfe_entrada.recibo is not null or nfe_entrada.recibo <> '') and (nfe_entrada.cStat <> '' or nfe_entrada.cStat is not null) and (nfe_entrada.xMotivo <> '' or nfe_entrada.xMotivo is not null) and (nfe_entrada.cancelado = 'aguardando') and (nfe_entrada.dt_cancela = '' or nfe_entrada.dt_cancela is null) and (nfe_itens_entrada.documento is not null)", nova_con);
+                    SqlCommand c_cancela = new SqlCommand("select top 1 nfe_entrada.*, nfe_itens_entrada.documento from nfe_entrada with(nolock) left outer join nfe_itens_entrada with(nolock) on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado = 'S') and (nfe_entrada.recibo is not null or nfe_entrada.recibo <> '') and (nfe_entrada.cStat <> '' or nfe_entrada.cStat is not null) and (nfe_entrada.xMotivo <> '' or nfe_entrada.xMotivo is not null) and (nfe_entrada.cancelado = 'aguardando') and (nfe_entrada.dt_cancela = '' or nfe_entrada.dt_cancela is null) and (nfe_itens_entrada.documento is not null)", nova_con);
                     reader_cancela = c_cancela.ExecuteReader();
                     while (reader_cancela.Read())
                     {
@@ -491,7 +491,7 @@ namespace criarNfeXML
                 nova_con.Open();
                 using (nova_con)
                 {
-                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_entrada.*,nfe_itens_entrada.documento as doc_itens from nfe_entrada left outer join nfe_itens_entrada on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado = 'S') and (nfe_entrada.recibo is not null or nfe_entrada.recibo <> '') and (nfe_entrada.cStat = '105')  and (nfe_itens_entrada.documento is not null)", nova_con);
+                    SqlCommand c_lote = new SqlCommand("select top 1 nfe_entrada.*,nfe_itens_entrada.documento as doc_itens from nfe_entrada with(nolock) left outer join nfe_itens_entrada with(nolock) on nfe_entrada.documento = nfe_itens_entrada.documento where (nfe_entrada.chave <> '' and nfe_entrada.chave is not null) and (nfe_entrada.nf<>'') and (nfe_entrada.xml='S') and (nfe_entrada.assinado = 'S') and (nfe_entrada.enviado = 'S') and (nfe_entrada.recibo is not null or nfe_entrada.recibo <> '') and (nfe_entrada.cStat = '105')  and (nfe_itens_entrada.documento is not null)", nova_con);
                     reader_lote = c_lote.ExecuteReader();
                     while (reader_lote.Read())
                     {

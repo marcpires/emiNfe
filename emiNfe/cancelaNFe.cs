@@ -40,9 +40,9 @@ namespace criarNfeXML
                         SqlCommand comando = null;
                         if (tipo == "saida")
                         {
-                            comando = new SqlCommand("select * from nfe_saida where cancelado = 'aguardando' and dt_cancela is null", nova_con);
+                            comando = new SqlCommand("select * from nfe_saida with(nolock) where cancelado = 'aguardando' and dt_cancela is null", nova_con);
                         }else if(tipo == "entrada"){
-                            comando = new SqlCommand("select * from nfe_entrada where cancelado = 'aguardando' and dt_cancela is null", nova_con);
+                            comando = new SqlCommand("select * from nfe_entrada with(nolock) where cancelado = 'aguardando' and dt_cancela is null", nova_con);
                         }
                         reader_nf = comando.ExecuteReader();
                         reader_nf.Read();

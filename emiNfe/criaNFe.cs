@@ -116,13 +116,13 @@ namespace criarNfeXML
                     //SqlCommand comando_nf = new SqlCommand("select a.*,b.cliente as cli_nome,b.endereco as cli_end,b.numero as cli_numero, b.bairro as cli_bairro, b.cidade as cli_cidade,b.estado as cli_estado,b.cep as cli_cep,b.inscest as cli_ie from nfe_saida a inner join usuarios b on a.cnpj_dest = b.cgc where a.documento='" + venda + "'", nova_con);
                     if (tipo_nfe == "saida")
                     {
-                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_saida a INNER JOIN usuarios b ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c ON b.CIDADE = c.nm_municipio where a.documento='" + venda + "'", nova_con);
+                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_saida a with(nolock) INNER JOIN usuarios b with(nolock) ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c with(nolock) ON b.CIDADE = c.nm_municipio where a.documento='" + venda + "'", nova_con);
                         dados_nf = comando_nf.ExecuteReader(); // data reader para consultar informações da nota e do destinatario da nota
                         dados_nf.Read();
                     }
                     else if (tipo_nfe == "entrada")
                     {
-                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_entrada a INNER JOIN usuarios b ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c ON b.CIDADE = c.nm_municipio where a.documento='" + venda + "'", nova_con);
+                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_entrada a with(nolock) INNER JOIN usuarios b with(nolock) ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c with(nolock) ON b.CIDADE = c.nm_municipio where a.documento='" + venda + "'", nova_con);
                         dados_nf = comando_nf.ExecuteReader(); // data reader para consultar informações da nota e do destinatario da nota
                         dados_nf.Read();
                     }
@@ -175,7 +175,7 @@ namespace criarNfeXML
                     cidcli_read.Close();
                     */
 
-                    SqlCommand aliqs = new SqlCommand("select * from val_pis_cofins", nova_con);
+                    SqlCommand aliqs = new SqlCommand("select * from val_pis_cofins with(nolock)", nova_con);
                     aliqs_read = aliqs.ExecuteReader();
                     aliqs_read.Read();
                     pPis = aliqs_read["pis"].ToString().Trim();
@@ -195,7 +195,7 @@ namespace criarNfeXML
                     int chave_lote_int;
 
 
-                    SqlCommand comando_emit = new SqlCommand("select * from Nfe where cnpj='" + chave_CNPJ + "'", nova_con);
+                    SqlCommand comando_emit = new SqlCommand("select * from Nfe with(nolock) where cnpj='" + chave_CNPJ + "'", nova_con);
                     dados_emit = comando_emit.ExecuteReader(); // data reader para consultar informações sobre o emissor da nota fiscal, numero de nota, lote, serie
                     dados_emit.Read();
                     chave_NRO_int = Convert.ToInt32(dados_emit["nNf"].ToString());
@@ -373,11 +373,11 @@ namespace criarNfeXML
                     SqlCommand comando_itens = null;
                     if (tipo_nfe == "saida")
                     {
-                        comando_itens = new SqlCommand("select * from nfe_itens_saida where documento='" + venda + "'", nova_con);
+                        comando_itens = new SqlCommand("select * from nfe_itens_saida with(nolock) where documento='" + venda + "'", nova_con);
                     }
                     else if (tipo_nfe == "entrada")
                     {
-                        comando_itens = new SqlCommand("select * from nfe_itens_entrada where documento='" + venda + "'", nova_con);
+                        comando_itens = new SqlCommand("select * from nfe_itens_entrada with(nolock) where documento='" + venda + "'", nova_con);
                     }
                     dados_itens = comando_itens.ExecuteReader(); // data reader para consultar os itens da compra
 
