@@ -116,13 +116,13 @@ namespace criarNfeXML
                     //SqlCommand comando_nf = new SqlCommand("select a.*,b.cliente as cli_nome,b.endereco as cli_end,b.numero as cli_numero, b.bairro as cli_bairro, b.cidade as cli_cidade,b.estado as cli_estado,b.cep as cli_cep,b.inscest as cli_ie from nfe_saida a inner join usuarios b on a.cnpj_dest = b.cgc where a.documento='" + venda + "'", nova_con);
                     if (tipo_nfe == "saida")
                     {
-                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_saida a with(nolock) INNER JOIN usuarios b with(nolock) ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c with(nolock) ON b.CIDADE = c.nm_municipio where a.documento='" + venda + "'", nova_con);
+                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_saida a with(nolock) INNER JOIN usuarios b with(nolock) ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c with(nolock) ON b.CIDADE = c.nm_municipio and c.sigla_uf = b.estado where a.documento='" + venda + "'", nova_con);
                         dados_nf = comando_nf.ExecuteReader(); // data reader para consultar informações da nota e do destinatario da nota
                         dados_nf.Read();
                     }
                     else if (tipo_nfe == "entrada")
                     {
-                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_entrada a with(nolock) INNER JOIN usuarios b with(nolock) ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c with(nolock) ON b.CIDADE = c.nm_municipio where a.documento='" + venda + "'", nova_con);
+                        SqlCommand comando_nf = new SqlCommand("SELECT a.*, b.CLIENTE AS cli_nome, b.ENDERECO AS cli_end, b.NUMERO AS cli_numero, b.BAIRRO AS cli_bairro, b.CIDADE AS cli_cidade, b.ESTADO AS cli_estado, b.CEP AS cli_cep, b.INSCEST AS cli_ie, c.cod_municipio AS cod_mun FROM nfe_entrada a with(nolock) INNER JOIN usuarios b with(nolock) ON a.cnpj_dest = b.CGC INNER JOIN cod_muni_ibge c with(nolock) ON b.CIDADE = c.nm_municipio and c.sigla_uf = b.estado where a.documento='" + venda + "'", nova_con);
                         dados_nf = comando_nf.ExecuteReader(); // data reader para consultar informações da nota e do destinatario da nota
                         dados_nf.Read();
                     }
@@ -344,7 +344,13 @@ namespace criarNfeXML
                     //fim dos dados de quem emite a nota fiscal
                     //inicio dos dados do cliente para quem se esta emitindo a nota fiscal
                     writer.WriteStartElement("dest"); //tag dest
-                    writer.WriteElementString("CPF", CPF_CNPJ.Trim());
+                    if (CPF_CNPJ.Trim().Length < 14)
+                    {
+                        writer.WriteElementString("CPF", CPF_CNPJ.Trim());
+                    }
+                    else {
+                        writer.WriteElementString("CNPJ", CPF_CNPJ.Trim());
+                    }
                     writer.WriteElementString("xNome", "NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
                     writer.WriteStartElement("enderDest"); //tag enderDest
                     writer.WriteElementString("xLgr", xLgr_dest.Trim());
@@ -412,127 +418,222 @@ namespace criarNfeXML
                             cst = "0" + cst;
                         }
 
-
-                        nItem += 1;
-                        writer.WriteStartElement("det"); //tag det
-                        writer.WriteAttributeString("nItem", nItem.ToString());
-                        writer.WriteStartElement("prod"); //tag prod
-                        writer.WriteElementString("cProd", dados_itens["coditem"].ToString().Trim());
-                        writer.WriteStartElement("cEAN"); // tag cEAN
-                        writer.WriteEndElement();//fim cEAN
-                        writer.WriteElementString("xProd", xProd);
-                        writer.WriteElementString("NCM", dados_itens["ncm"].ToString().Trim());
-                        writer.WriteElementString("CFOP", dados_itens["cfop"].ToString().Trim());
-                        writer.WriteElementString("uCom", dados_itens["unidade"].ToString().Trim());
-                        writer.WriteElementString("qCom", qCom);
-                        writer.WriteElementString("vUnCom", vUnCom);
-                        writer.WriteElementString("vProd", vProd);
-                        writer.WriteStartElement("cEANTrib"); // tag cEANTrib
-                        writer.WriteEndElement();//fim cEANTrib
-                        writer.WriteElementString("uTrib", dados_itens["unidade"].ToString().Trim());
-                        writer.WriteElementString("qTrib", qTrib);
-                        writer.WriteElementString("vUnTrib", vUnTrib);
-                        writer.WriteElementString("indTot", "1");
-                        writer.WriteEndElement(); //fim prod
-                        writer.WriteStartElement("imposto"); //tag imposto
-                        writer.WriteStartElement("ICMS");//tag ICMS
-                        //tags novas
-                        writer.WriteStartElement("ICMS60"); //tag ICMSSN101
-                        writer.WriteElementString("orig", origem);
-                        writer.WriteElementString("CST", cst);
-                        writer.WriteElementString("vBCSTRet", "0.00");
-                        writer.WriteElementString("vICMSSTRet", "0.00");
-                        //writer.WriteElementString("vBCST", vBCST);
-                        //writer.WriteElementString("vICMSST", vICMSST);
-                        writer.WriteEndElement(); // fim ICMS60
-
-                        //fim tags novas
-                        //tags mandadas anteriormente
-                        //writer.WriteStartElement("ICMSSN101"); //tag ICMSSN101
-                        //writer.WriteElementString("orig", "0");
-                        //writer.WriteElementString("CSOSN", "101");
-                        //writer.WriteElementString("pCredSN", "0.00");
-                        //writer.WriteElementString("vCredICMSSN", "0.00");
-                        //writer.WriteEndElement();// fim ICMSSN101
-                        //fim das tags mandadas anteriomente
-                        writer.WriteEndElement(); //fim ICMS
-                        //tags novas
-                        writer.WriteStartElement("IPI"); //tag IPI
-                        writer.WriteElementString("cEnq", "999");
-                        writer.WriteStartElement("IPINT"); //tag IPINT
-                        writer.WriteElementString("CST", "52");
-                        writer.WriteEndElement();//fim IPINT
-                        writer.WriteEndElement();//fim IPI 
-                        //fim das tags novas
-                        //tags novas
-                        writer.WriteStartElement("PIS"); //tag PIS
-                        if (cst_pis == "08")
+                        if (tipo_nfe == "saida")
                         {
+                            nItem += 1;
+                            writer.WriteStartElement("det"); //tag det
+                            writer.WriteAttributeString("nItem", nItem.ToString());
+                            writer.WriteStartElement("prod"); //tag prod
+                            writer.WriteElementString("cProd", dados_itens["coditem"].ToString().Trim());
+                            writer.WriteStartElement("cEAN"); // tag cEAN
+                            writer.WriteEndElement();//fim cEAN
+                            writer.WriteElementString("xProd", xProd);
+                            writer.WriteElementString("NCM", dados_itens["ncm"].ToString().Trim());
+                            writer.WriteElementString("CFOP", dados_itens["cfop"].ToString().Trim());
+                            writer.WriteElementString("uCom", dados_itens["unidade"].ToString().Trim());
+                            writer.WriteElementString("qCom", qCom);
+                            writer.WriteElementString("vUnCom", vUnCom);
+                            writer.WriteElementString("vProd", vProd);
+                            writer.WriteStartElement("cEANTrib"); // tag cEANTrib
+                            writer.WriteEndElement();//fim cEANTrib
+                            writer.WriteElementString("uTrib", dados_itens["unidade"].ToString().Trim());
+                            writer.WriteElementString("qTrib", qTrib);
+                            writer.WriteElementString("vUnTrib", vUnTrib);
+                            writer.WriteElementString("indTot", "1");
+                            writer.WriteEndElement(); //fim prod
+                            if (dados_itens["cfop"].ToString().Trim() != "5409")
+                            {
+                                writer.WriteStartElement("imposto"); //tag imposto
+                                writer.WriteStartElement("ICMS");//tag ICMS
+                                //tags novas
+                                writer.WriteStartElement("ICMS60"); //tag ICMSSN101
+                                writer.WriteElementString("orig", origem);
+                                writer.WriteElementString("CST", cst);
+                                writer.WriteElementString("vBCSTRet", "0.00");
+                                writer.WriteElementString("vICMSSTRet", "0.00");
+                                //writer.WriteElementString("vBCST", vBCST);
+                                //writer.WriteElementString("vICMSST", vICMSST);
+                                writer.WriteEndElement(); // fim ICMS60
+
+                                //fim tags novas
+                                //tags mandadas anteriormente
+                                //writer.WriteStartElement("ICMSSN101"); //tag ICMSSN101
+                                //writer.WriteElementString("orig", "0");
+                                //writer.WriteElementString("CSOSN", "101");
+                                //writer.WriteElementString("pCredSN", "0.00");
+                                //writer.WriteElementString("vCredICMSSN", "0.00");
+                                //writer.WriteEndElement();// fim ICMSSN101
+                                //fim das tags mandadas anteriomente
+                                writer.WriteEndElement(); //fim ICMS
+                                //tags novas
+                                writer.WriteStartElement("IPI"); //tag IPI
+                                writer.WriteElementString("cEnq", "999");
+                                writer.WriteStartElement("IPINT"); //tag IPINT
+                                writer.WriteElementString("CST", "52");
+                                writer.WriteEndElement();//fim IPINT
+                                writer.WriteEndElement();//fim IPI 
+                                //fim das tags novas
+                                //tags novas
+                                writer.WriteStartElement("PIS"); //tag PIS
+                                if (cst_pis == "08")
+                                {
+                                    writer.WriteStartElement("PISNT"); //tag PISNT
+                                    writer.WriteElementString("CST", cst_pis);
+                                    writer.WriteEndElement(); // fim tag PISNT   
+                                }
+                                if (cst_pis == "01")
+                                {
+                                    writer.WriteStartElement("PISAliq"); //tag PISAliq
+                                    writer.WriteElementString("CST", cst_pis);
+                                    writer.WriteElementString("vBC", vProd);
+                                    writer.WriteElementString("pPIS", valores(5, 2, pPis.ToString()));
+                                    writer.WriteElementString("vPIS", valores(15, 2, vPis));
+                                    writer.WriteEndElement();// dim PISAliq
+                                }
+                                // fim das tags novas
+                                //tags antigas
+                                //writer.WriteStartElement("PISNT"); //tag PISNT
+                                //writer.WriteStartElement("PISAliq"); //tag PISAliq
+                                //writer.WriteElementString("CST", "06");
+                                //writer.WriteElementString("vBC", vProd);
+                                //writer.WriteElementString("pPIS", valores(5,2,pPis.ToString()));
+                                //writer.WriteElementString("vPIS", valores(15,2,(Convert.ToDouble(vProd)/pPis).ToString()));
+                                //writer.WriteEndElement();// dim PISAliq
+                                //writer.WriteEndElement();// dim PISNT
+                                //fim tags antigas
+                                writer.WriteEndElement();// fim PIS
+                                //writer.WriteStartElement("PISST");// tag PISST
+                                //writer.WriteElementString("vBC", vProd);
+                                //writer.WriteElementString("pPIS", "0.01");
+                                //writer.WriteElementString("vPIS", "0.01");
+                                //writer.WriteEndElement(); //fim PISST
+                                writer.WriteStartElement("COFINS"); //tag COFINS
+                                if (cst_cofins == "08")
+                                {
+                                    writer.WriteStartElement("COFINSNT");
+                                    writer.WriteElementString("CST", cst_cofins);
+                                    writer.WriteEndElement(); // fim COFINSNT
+                                }
+                                if (cst_cofins == "01")
+                                {
+                                    writer.WriteStartElement("COFINSAliq"); // tag COFINSAliq
+                                    writer.WriteElementString("CST", cst_cofins);
+                                    writer.WriteElementString("vBC", vProd);
+                                    writer.WriteElementString("pCOFINS", valores(5, 2, pCofins.ToString()));
+                                    writer.WriteElementString("vCOFINS", valores(15, 2, vCofins.ToString()));
+                                    writer.WriteEndElement(); // fim COFINSAliq
+                                }
+                                //tags antigas
+                                //writer.WriteStartElement("COFINSNT");
+                                //writer.WriteStartElement("COFINSAliq"); // tag COFINSAliq
+                                //writer.WriteElementString("CST", "06");
+                                //writer.WriteElementString("vBC",vProd);
+                                //writer.WriteElementString("pCOFINS", valores(5,2,pCofins.ToString()));
+                                //writer.WriteElementString("vCOFINS", valores(15, 2, (Convert.ToDouble(vProd) / pCofins).ToString()));
+                                //writer.WriteEndElement(); // fim COFINSAliq
+                                //writer.WriteEndElement(); // fim COFINSNT
+                                //fim das tags antigas
+                                writer.WriteEndElement(); //fiM COFINS
+                                //writer.WriteStartElement("COFINSST"); // tag COFINSST
+                                //writer.WriteElementString("vBC", vProd);
+                                //writer.WriteElementString("pCOFINS", "0.01");
+                                //writer.WriteElementString("vCOFINS", "0.01");
+                                //writer.WriteEndElement(); //fim COFINSST
+                                writer.WriteEndElement(); // fim imposto
+                            }
+                            else {
+                                writer.WriteStartElement("imposto"); //tag imposto
+                                writer.WriteStartElement("ICMS");//tag ICMS
+                                writer.WriteStartElement("ICMS00"); //tag ICMS00
+                                writer.WriteElementString("orig", origem);
+                                writer.WriteElementString("CST", "00");
+                                writer.WriteElementString("modBC", "0");
+                                writer.WriteElementString("vBC", "0.00");
+                                writer.WriteElementString("pICMS", "0.00");
+                                writer.WriteElementString("vICMS", "0.00");
+                                writer.WriteEndElement(); // fim ICMS00
+                                writer.WriteEndElement(); // fim ICMS
+                                writer.WriteStartElement("PIS"); //tag PIS
+                                writer.WriteStartElement("PISNT"); //tag PISNT
+                                string cst_entrada = "06";
+                                /*if (dados_itens["cfop"].ToString().Trim() == "1411")
+                                {
+                                    cst_entrada = "07";
+                                }
+                                else if (dados_itens["cfop"].ToString().Trim() == "5409") {
+                                    cst_entrada = "06";
+                                }*/
+                                writer.WriteElementString("CST", cst_entrada);
+                                writer.WriteEndElement(); // fim tag PISNT   
+                                writer.WriteEndElement();// fim PIS
+                                writer.WriteStartElement("COFINS"); //tag COFINS                     
+                                writer.WriteStartElement("COFINSNT");
+                                writer.WriteElementString("CST", cst_entrada);
+                                writer.WriteEndElement(); // fim COFINSNT
+                                writer.WriteEndElement(); //fiM COFINS
+                                writer.WriteEndElement(); // fim imposto
+                            
+                            }
+                            writer.WriteEndElement();//fim det
+                        }//fim do while para produtos
+
+                        else if (tipo_nfe == "entrada") {
+                            nItem += 1;
+                            writer.WriteStartElement("det"); //tag det
+                            writer.WriteAttributeString("nItem", nItem.ToString());
+                            writer.WriteStartElement("prod"); //tag prod
+                            writer.WriteElementString("cProd", dados_itens["coditem"].ToString().Trim());
+                            writer.WriteStartElement("cEAN"); // tag cEAN
+                            writer.WriteEndElement();//fim cEAN
+                            writer.WriteElementString("xProd", xProd);
+                            writer.WriteElementString("NCM", dados_itens["ncm"].ToString().Trim());
+                            writer.WriteElementString("CFOP", dados_itens["cfop"].ToString().Trim());
+                            writer.WriteElementString("uCom", dados_itens["unidade"].ToString().Trim());
+                            writer.WriteElementString("qCom", qCom);
+                            writer.WriteElementString("vUnCom", vUnCom);
+                            writer.WriteElementString("vProd", vProd);
+                            writer.WriteStartElement("cEANTrib"); // tag cEANTrib
+                            writer.WriteEndElement();//fim cEANTrib
+                            writer.WriteElementString("uTrib", dados_itens["unidade"].ToString().Trim());
+                            writer.WriteElementString("qTrib", qTrib);
+                            writer.WriteElementString("vUnTrib", vUnTrib);
+                            writer.WriteElementString("indTot", "1");
+                            writer.WriteEndElement(); //fim prod
+                            writer.WriteStartElement("imposto"); //tag imposto
+                            writer.WriteStartElement("ICMS");//tag ICMS
+                            writer.WriteStartElement("ICMS00"); //tag ICMS00
+                            writer.WriteElementString("orig", origem);
+                            writer.WriteElementString("CST", "00");
+                            writer.WriteElementString("modBC", "3");
+                            writer.WriteElementString("vBC", "0.00");
+                            writer.WriteElementString("pICMS", "0.00");
+                            writer.WriteElementString("vICMS", "0.00");
+                            writer.WriteEndElement(); // fim ICMS00
+                            writer.WriteEndElement(); // fim ICMS
+                            writer.WriteStartElement("PIS"); //tag PIS
                             writer.WriteStartElement("PISNT"); //tag PISNT
-                            writer.WriteElementString("CST", cst_pis);
+                            string cst_entrada="07";
+                            /*if (dados_itens["cfop"].ToString().Trim() == "1411")
+                            {
+                                cst_entrada = "07";
+                            }
+                            else if (dados_itens["cfop"].ToString().Trim() == "5409") {
+                                cst_entrada = "06";
+                            }*/
+                            writer.WriteElementString("CST", cst_entrada);
                             writer.WriteEndElement(); // fim tag PISNT   
-                        }
-                        if (cst_pis == "01")
-                        {
-                            writer.WriteStartElement("PISAliq"); //tag PISAliq
-                            writer.WriteElementString("CST", cst_pis);
-                            writer.WriteElementString("vBC", vProd);
-                            writer.WriteElementString("pPIS", valores(5, 2, pPis.ToString()));
-                            writer.WriteElementString("vPIS", valores(15, 2, vPis));
-                            writer.WriteEndElement();// dim PISAliq
-                        }
-                        // fim das tags novas
-                        //tags antigas
-                        //writer.WriteStartElement("PISNT"); //tag PISNT
-                        //writer.WriteStartElement("PISAliq"); //tag PISAliq
-                        //writer.WriteElementString("CST", "06");
-                        //writer.WriteElementString("vBC", vProd);
-                        //writer.WriteElementString("pPIS", valores(5,2,pPis.ToString()));
-                        //writer.WriteElementString("vPIS", valores(15,2,(Convert.ToDouble(vProd)/pPis).ToString()));
-                        //writer.WriteEndElement();// dim PISAliq
-                        //writer.WriteEndElement();// dim PISNT
-                        //fim tags antigas
-                        writer.WriteEndElement();// fim PIS
-                        //writer.WriteStartElement("PISST");// tag PISST
-                        //writer.WriteElementString("vBC", vProd);
-                        //writer.WriteElementString("pPIS", "0.01");
-                        //writer.WriteElementString("vPIS", "0.01");
-                        //writer.WriteEndElement(); //fim PISST
-                        writer.WriteStartElement("COFINS"); //tag COFINS
-                        if (cst_cofins == "08")
-                        {
+                            writer.WriteEndElement();// fim PIS
+                            writer.WriteStartElement("COFINS"); //tag COFINS                     
                             writer.WriteStartElement("COFINSNT");
-                            writer.WriteElementString("CST", cst_cofins);
+                            writer.WriteElementString("CST", cst_entrada);
                             writer.WriteEndElement(); // fim COFINSNT
+                            writer.WriteEndElement(); //fiM COFINS
+                            writer.WriteEndElement(); // fim imposto
+                            writer.WriteEndElement();//fim det
+                        
+                        
                         }
-                        if (cst_cofins == "01")
-                        {
-                            writer.WriteStartElement("COFINSAliq"); // tag COFINSAliq
-                            writer.WriteElementString("CST", cst_cofins);
-                            writer.WriteElementString("vBC", vProd);
-                            writer.WriteElementString("pCOFINS", valores(5, 2, pCofins.ToString()));
-                            writer.WriteElementString("vCOFINS", valores(15, 2, vCofins.ToString()));
-                            writer.WriteEndElement(); // fim COFINSAliq
-                        }
-                        //tags antigas
-                        //writer.WriteStartElement("COFINSNT");
-                        //writer.WriteStartElement("COFINSAliq"); // tag COFINSAliq
-                        //writer.WriteElementString("CST", "06");
-                        //writer.WriteElementString("vBC",vProd);
-                        //writer.WriteElementString("pCOFINS", valores(5,2,pCofins.ToString()));
-                        //writer.WriteElementString("vCOFINS", valores(15, 2, (Convert.ToDouble(vProd) / pCofins).ToString()));
-                        //writer.WriteEndElement(); // fim COFINSAliq
-                        //writer.WriteEndElement(); // fim COFINSNT
-                        //fim das tags antigas
-                        writer.WriteEndElement(); //fiM COFINS
-                        //writer.WriteStartElement("COFINSST"); // tag COFINSST
-                        //writer.WriteElementString("vBC", vProd);
-                        //writer.WriteElementString("pCOFINS", "0.01");
-                        //writer.WriteElementString("vCOFINS", "0.01");
-                        //writer.WriteEndElement(); //fim COFINSST
-                        writer.WriteEndElement(); // fim imposto
-                        writer.WriteEndElement();//fim det
-                    }//fim do while para produtos
+                    }
                     dados_itens.Close();
                     writer.WriteStartElement("total"); //tag total
                     writer.WriteStartElement("ICMSTot"); //tag ICMSTot
